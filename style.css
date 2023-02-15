@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: antiquewhite;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  font-size: 4vmin;
+  color: burlywood;
+  font-weight: bold;
+}
+
+/* ---- Gameboard ------*/
+
+.grid .gridCell {
+  height: 5vmin;
+  width: 5vw;
+  background-color: brown;
+  border: 1px solid black;
+}
