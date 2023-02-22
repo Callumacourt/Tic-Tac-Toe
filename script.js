@@ -33,9 +33,6 @@ const GameboardModule = (function () {
     [3, 6, 9],
   ];
 
-  let playerWins;
-  let computerWins;
-
   function checkForWinner() {
     let winner = null;
     GameboardModule.winningCombinations.forEach((combination) => {
@@ -76,20 +73,12 @@ const gameFlowModule = (function () {
   let pieceChoice;
   let computerPiece;
   let turnDecider = 'player';
-  let playerArray;
-  let computerArray;
-  playerArray = [];
-  computerArray = [];
-
-  let gameOver = false;
 
   function getComputerPiece() {
     if (pieceChoice === 'O') {
       computerPiece = 'X';
     } else if (pieceChoice === 'X') {
       computerPiece = 'O';
-    } else {
-      console.error();
     }
   }
 
@@ -97,6 +86,7 @@ const gameFlowModule = (function () {
     if (pieceChoice === undefined) {
       const oButtonClickHandler = () => {
         pieceChoice = 'O';
+        /* Removes animation from piece choice buttons */
         selectors.buttonWrapper.classList.remove('selectionNeeded');
         getComputerPiece();
         selectors.oButton.removeEventListener('click', oButtonClickHandler);
@@ -125,9 +115,15 @@ const gameFlowModule = (function () {
     return Math.floor(Math.random() * 9) + 1;
   }
 
+  const computerArray = [];
+  const playerArray = [];
   let computerWins;
-  let playerWins;
   computerWins = 0;
+  let playerWins;
+  playerWins = 0;
+  let gameOver;
+  gameOver = false;
+
   playerWins = 0;
 
   function setComputerChoice() {
@@ -136,19 +132,20 @@ const gameFlowModule = (function () {
     }
     const computerChoice = generateComputerChoice();
     const index = GameboardModule.gameboard.indexOf(computerChoice);
+
     if (index !== -1) {
       const cell = document.getElementById(computerChoice.toString());
       cell.innerHTML = computerPiece;
       computerArray.push(computerChoice);
-      console.log(computerArray);
       GameboardModule.gameboard.splice(index, 1);
+
       const winner = GameboardModule.checkForWinner();
       if (winner !== null) {
         selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
         gameOver = true;
+
         /* turn into function please */
         if (winner === pieceChoice) {
-          console.log('');
           selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
         } else if (winner === computerPiece) {
           computerWins += 1;
@@ -181,12 +178,28 @@ const gameFlowModule = (function () {
     }
   }
 
+  function updateWinner() {
+    const winner = GameboardModule.checkForWinner();
+    if (winner !== null) {
+      selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
+      gameOver = true;
+      if (winner === pieceChoice) {
+        playerWins += 1;
+        selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
+      } else if (winner === computerPiece) {
+        computerWins += 1;
+        selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
+      }
+    }
+  }
+
   function getPlayerChoice() {
     Array.from(selectors.gridCell).forEach((cell) => {
+      // Make player select a piece at game start //
       cell.addEventListener('click', () => {
-        console.log(turnDecider);
-        console.log(pieceChoice);
-        console.log(cell.innerHTML);
+        if (pieceChoice === undefined) {
+          selectors.buttonWrapper.classList.add('selectionNeeded');
+        }
         // Check if cell is empty, piece is chosen, it's player's turn and the game isn't over
         if (
           turnDecider === 'player' &&
@@ -203,37 +216,18 @@ const gameFlowModule = (function () {
             // Remove the selected number from the gameboard array
             GameboardModule.gameboard.splice(index, 1);
           }
-
-          // Set the innerHTML of the selected cell to the player's piece
           cell.innerHTML = pieceChoice;
-          console.log(playerArray);
-          console.log(pieceChoice);
 
           turnDecider = 'computer';
           GameboardModule.checkForDraw();
-          const winner = GameboardModule.checkForWinner();
-          if (winner !== null) {
-            selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
-            gameOver = true;
-            if (winner === pieceChoice) {
-              playerWins += 1;
-              selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
-            } else if (winner === computerPiece) {
-              computerWins += 1;
-              selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
-            }
-          }
+          updateWinner();
 
           setComputerChoice();
-        } else if (pieceChoice === undefined) {
-          selectors.buttonWrapper.classList.add('selectionNeeded');
-        } else if (GameboardModule.checkForDraw === true) {
-          selectors.winnerDisplayer.innerHTML = "It's a draw";
-        }
 
-        /* fixes reset error */
-        if (gameOver === true) {
-          turnDecider = 'player';
+          /* fixes reset error -  */
+          if (gameOver === true) {
+            turnDecider = 'player';
+          }
         }
       });
     });
@@ -249,37 +243,32 @@ const gameFlowModule = (function () {
   };
 })();
 
-function resetGame() {
-  GameboardModule.gameboard = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  selectors.winnerDisplayer.innerHTML = '';
-  gameFlowModule.turnDecider = 'player';
-  gameFlowModule.playerArray.length = 0;
-  gameFlowModule.computerArray.length = 0;
-  selectors.matchWinner.innerHTML = '';
-  gameFlowModule.resetPieces();
+const gameAdmin = (function () {
+  function resetGame() {
+    GameboardModule.gameboard = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    selectors.winnerDisplayer.innerHTML = '';
+    gameFlowModule.turnDecider = 'player';
+    gameFlowModule.playerArray.length = 0;
+    gameFlowModule.computerArray.length = 0;
+    selectors.matchWinner.innerHTML = '';
+    gameFlowModule.resetPieces();
 
-  // Remove event listeners from cells
-  Array.from(selectors.gridCell).forEach((cell) => {
-    cell.innerHTML = '';
-    cell.removeEventListener('click', gameFlowModule.getPlayerChoice);
+    Array.from(selectors.gridCell).forEach((cell) => {
+      cell.innerHTML = '';
+    });
+
+    gameFlowModule.getPlayerPiece();
+  }
+
+  window.addEventListener('load', () => {
+    gameFlowModule.getPlayerPiece();
+    gameFlowModule.getPlayerChoice();
+    selectors.endGameButton.addEventListener('click', () => {
+      gameFlowModule.matchWinnerChecker();
+    });
   });
 
-  // Add event listeners back to cells
-  Array.from(selectors.gridCell).forEach((cell) => {
-    cell.addEventListener('click', gameFlowModule.getPlayerChoice);
+  selectors.resetButton.addEventListener('click', () => {
+    resetGame();
   });
-  gameFlowModule.getPlayerPiece();
-}
-
-window.addEventListener('load', () => {
-  gameFlowModule.getPlayerPiece();
-  gameFlowModule.getPlayerChoice();
-  selectors.endGameButton.addEventListener('click', () => {
-    gameFlowModule.matchWinnerChecker();
-  });
-});
-
-selectors.resetButton.addEventListener('click', () => {
-  resetGame();
-  console.log(GameboardModule.gameboard);
-});
+})();
