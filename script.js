@@ -1,14 +1,18 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable wrap-iife */
-const gridCell = document.querySelectorAll('.gridCell');
-const oButton = document.querySelector('.O');
-const xButton = document.querySelector('.X');
-const buttonWrapper = document.querySelector('.buttonWrapper');
-const winnerDisplayer = document.querySelector('.winner');
-const resetButton = document.querySelector('.resetButton');
-const playerWinsTracker = document.querySelector('.playerWins');
-const computerWinsTracker = document.querySelector('.computerWins');
-const endGameButton = document.querySelector('.endGame');
+
+const selectors = {
+  gridCell: document.querySelectorAll('.gridCell'),
+  oButton: document.querySelector('.O'),
+  xButton: document.querySelector('.X'),
+  buttonWrapper: document.querySelector('.buttonWrapper'),
+  winnerDisplayer: document.querySelector('.winner'),
+  resetButton: document.querySelector('.resetButton'),
+  playerWinsTracker: document.querySelector('.playerWins'),
+  computerWinsTracker: document.querySelector('.computerWins'),
+  endGameButton: document.querySelector('.endGame'),
+  matchWinner: document.querySelector('.matchWinner'),
+};
 
 // eslint-disable-next-line wrap-iife
 
@@ -54,9 +58,9 @@ const GameboardModule = (function () {
   function checkForDraw() {
     if (
       GameboardModule.checkForWinner() === null &&
-      Array.from(gridCell).every((cell) => cell.innerHTML !== '')
+      Array.from(selectors.gridCell).every((cell) => cell.innerHTML !== '')
     ) {
-      winnerDisplayer.innerHTML = "It's a draw!";
+      selectors.winnerDisplayer.innerHTML = "It's a draw!";
     }
   }
 
@@ -93,22 +97,22 @@ const gameFlowModule = (function () {
     if (pieceChoice === undefined) {
       const oButtonClickHandler = () => {
         pieceChoice = 'O';
-        buttonWrapper.classList.remove('selectionNeeded');
+        selectors.buttonWrapper.classList.remove('selectionNeeded');
         getComputerPiece();
-        oButton.removeEventListener('click', oButtonClickHandler);
-        xButton.removeEventListener('click', xButtonClickHandler);
+        selectors.oButton.removeEventListener('click', oButtonClickHandler);
+        selectors.xButton.removeEventListener('click', xButtonClickHandler);
       };
 
       const xButtonClickHandler = () => {
         pieceChoice = 'X';
-        buttonWrapper.classList.remove('selectionNeeded');
+        selectors.buttonWrapper.classList.remove('selectionNeeded');
         getComputerPiece();
-        xButton.removeEventListener('click', xButtonClickHandler);
-        oButton.removeEventListener('click', oButtonClickHandler);
+        selectors.xButton.removeEventListener('click', xButtonClickHandler);
+        selectors.oButton.removeEventListener('click', oButtonClickHandler);
       };
 
-      oButton.addEventListener('click', oButtonClickHandler);
-      xButton.addEventListener('click', xButtonClickHandler);
+      selectors.oButton.addEventListener('click', oButtonClickHandler);
+      selectors.xButton.addEventListener('click', xButtonClickHandler);
     }
   }
 
@@ -130,10 +134,6 @@ const gameFlowModule = (function () {
     if (GameboardModule.gameboard.length === 0) {
       return;
     }
-
-    let flag;
-    flag = false;
-
     const computerChoice = generateComputerChoice();
     const index = GameboardModule.gameboard.indexOf(computerChoice);
     if (index !== -1) {
@@ -144,15 +144,15 @@ const gameFlowModule = (function () {
       GameboardModule.gameboard.splice(index, 1);
       const winner = GameboardModule.checkForWinner();
       if (winner !== null) {
-        winnerDisplayer.innerHTML = `${winner} wins!`;
+        selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
         gameOver = true;
         /* turn into function please */
         if (winner === pieceChoice) {
           console.log('');
-          playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
+          selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
         } else if (winner === computerPiece) {
           computerWins += 1;
-          computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
+          selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
         }
       }
       turnDecider = 'player';
@@ -161,25 +161,38 @@ const gameFlowModule = (function () {
     }
   }
 
+  function resetWins() {
+    computerWins = null;
+    playerWins = null;
+    selectors.computerWinsTracker.innerHTML = '';
+    selectors.playerWinsTracker.innerHTML = '';
+  }
+
   function matchWinnerChecker() {
     if (computerWins > playerWins) {
-      alert('The Computer has won the match');
+      selectors.matchWinner.innerHTML = 'The computer has won the match';
+      resetWins();
+    } else if (playerWins > computerWins) {
+      selectors.matchWinner.innerHTML = 'The player has won the match';
+      resetWins();
     } else {
-      alert('The Player has won the match');
+      selectors.matchWinner.innerHTML = 'The match was a draw';
+      resetWins();
     }
   }
 
   function getPlayerChoice() {
-    Array.from(gridCell).forEach((cell) => {
+    Array.from(selectors.gridCell).forEach((cell) => {
       cell.addEventListener('click', () => {
         console.log(turnDecider);
         console.log(pieceChoice);
         console.log(cell.innerHTML);
-        // Check if cell is empty, piece is chosen, and it's player's turn
+        // Check if cell is empty, piece is chosen, it's player's turn and the game isn't over
         if (
           turnDecider === 'player' &&
           cell.innerHTML.trim() === '' &&
-          pieceChoice !== undefined
+          pieceChoice !== undefined &&
+          selectors.winnerDisplayer.innerHTML === ''
         ) {
           // Get the ID of the selected cell and convert it to a number
           const selectedNumber = Number(cell.id);
@@ -200,23 +213,22 @@ const gameFlowModule = (function () {
           GameboardModule.checkForDraw();
           const winner = GameboardModule.checkForWinner();
           if (winner !== null) {
-            winnerDisplayer.innerHTML = `${winner} wins!`;
+            selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
             gameOver = true;
             if (winner === pieceChoice) {
               playerWins += 1;
-              flag = true;
-              playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
+              selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
             } else if (winner === computerPiece) {
               computerWins += 1;
-              computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
+              selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
             }
           }
 
           setComputerChoice();
         } else if (pieceChoice === undefined) {
-          buttonWrapper.classList.add('selectionNeeded');
+          selectors.buttonWrapper.classList.add('selectionNeeded');
         } else if (GameboardModule.checkForDraw === true) {
-          winnerDisplayer.innerHTML = "It's a draw";
+          selectors.winnerDisplayer.innerHTML = "It's a draw";
         }
 
         /* fixes reset error */
@@ -239,20 +251,21 @@ const gameFlowModule = (function () {
 
 function resetGame() {
   GameboardModule.gameboard = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  winnerDisplayer.innerHTML = '';
+  selectors.winnerDisplayer.innerHTML = '';
   gameFlowModule.turnDecider = 'player';
   gameFlowModule.playerArray.length = 0;
   gameFlowModule.computerArray.length = 0;
+  selectors.matchWinner.innerHTML = '';
   gameFlowModule.resetPieces();
 
   // Remove event listeners from cells
-  Array.from(gridCell).forEach((cell) => {
+  Array.from(selectors.gridCell).forEach((cell) => {
     cell.innerHTML = '';
     cell.removeEventListener('click', gameFlowModule.getPlayerChoice);
   });
 
   // Add event listeners back to cells
-  Array.from(gridCell).forEach((cell) => {
+  Array.from(selectors.gridCell).forEach((cell) => {
     cell.addEventListener('click', gameFlowModule.getPlayerChoice);
   });
   gameFlowModule.getPlayerPiece();
@@ -261,12 +274,12 @@ function resetGame() {
 window.addEventListener('load', () => {
   gameFlowModule.getPlayerPiece();
   gameFlowModule.getPlayerChoice();
-  endGameButton.addEventListener('click', () => {
+  selectors.endGameButton.addEventListener('click', () => {
     gameFlowModule.matchWinnerChecker();
   });
 });
 
-resetButton.addEventListener('click', () => {
+selectors.resetButton.addEventListener('click', () => {
   resetGame();
   console.log(GameboardModule.gameboard);
 });
