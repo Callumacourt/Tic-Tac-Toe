@@ -9,24 +9,46 @@
     <script src="script.js" defer></script>
   </head>
   <body>
-    <h1 class="title">Tic Tac Toe</h1>
-    <div class="gridWrapper">
-      <div class="rowOne">
-        <div class="gridCell"></div>
-        <div class="gridCell"></div>
-        <div class="gridCell"></div>
-      </div>
+    <div class="winCounterWrapper">
+      <div class="playerWins"></div>
+      <div class="computerWins"></div>
+    </div>
 
-      <div class="rowTwo">
-        <div class="gridCell"></div>
-        <div class="gridCell"></div>
-        <div class="gridCell"></div>
+    <h1 class="title">Tic Tac Toe</h1>
+
+    <div class="playerPieceWrapper">
+      <div class="playerPiece">
+        <h2 class="choiceAsker"><em>Noughts or Crosses?</em></h2>
+        <div class="buttonWrapper">
+          <button class="selector O">O</button>
+          <button class="selector X">X</button>
+        </div>
       </div>
-      <div class="rowThree">
-        <div class="gridCell"></div>
-        <div class="gridCell"></div>
-        <div class="gridCell"></div>
+    </div>
+    <div class="winnerContainer">
+      <div class="winner"></div>
+    </div>
+
+    <div class="matchWinnerContainer">
+      <div class="matchWinner"></div>
+    </div>
+
+    <div class="gridContainer">
+      <div class="gridWrapper">
+        <div class="gridCell" id="1"></div>
+        <div class="gridCell" id="2"></div>
+        <div class="gridCell" id="3"></div>
+        <div class="gridCell" id="4"></div>
+        <div class="gridCell" id="5"></div>
+        <div class="gridCell" id="6"></div>
+        <div class="gridCell" id="7"></div>
+        <div class="gridCell" id="8"></div>
+        <div class="gridCell" id="9"></div>
       </div>
+    </div>
+    <div class="resetWrapper">
+      <button class="resetButton">Reset</button>
+      <button class="endGame">End</button>
     </div>
   </body>
 </html>
