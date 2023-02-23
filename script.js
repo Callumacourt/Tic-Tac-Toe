@@ -100,10 +100,6 @@ const gameFlowModule = (function () {
     computerPiece = undefined;
   }
 
-  function generateComputerChoice() {
-    return Math.floor(Math.random() * 9) + 1;
-  }
-
   const computerArray = [];
   const playerArray = [];
   let computerWins;
@@ -114,6 +110,10 @@ const gameFlowModule = (function () {
   gameOver = false;
 
   playerWins = 0;
+
+  function generateComputerChoice() {
+    return Math.floor(Math.random() * 9) + 1;
+  }
 
   function winsTracker(winner) {
     if (winner === pieceChoice) {
@@ -155,8 +155,8 @@ const gameFlowModule = (function () {
   }
 
   function resetWins() {
-    computerWins = null;
-    playerWins = null;
+    computerWins = 0;
+    playerWins = 0;
     selectors.computerWinsTracker.innerHTML = '';
     selectors.playerWinsTracker.innerHTML = '';
   }
