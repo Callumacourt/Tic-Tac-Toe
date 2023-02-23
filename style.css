@@ -5,19 +5,176 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+/*  ----- Title ----- */
+
 .title {
   display: flex;
   justify-content: center;
-  font-size: 4vmin;
+  font-size: 5vmin;
   color: burlywood;
+  opacity: 0.8;
   font-weight: bold;
+  text-decoration: underline;
+  margin-top: 1vh;
+}
+
+.title:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+/*  ---- Noughts or Crosses Selector ---- */
+
+.playerPieceWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.playerPiece {
+  display: grid;
+  justify-items: center;
+  width: 60vw;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.choiceAsker {
+  font-size: 2.5vmin;
+  color: brown;
+}
+
+.buttonWrapper {
+  display: flex;
+  width: 10vw;
+  gap: 1vw;
+}
+
+.buttonWrapper button {
+  background-color: beige;
+  color: rosybrown;
+  font-weight: bold;
+  font-size: 2vmin;
+  padding: 1vh 1vw;
+  border: 0.5vmin solid peachpuff;
+  border-radius: 1vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonWrapper button:hover {
+  background-color: lightpink;
+  color: white;
+  cursor: pointer;
+}
+
+.selector {
+  width: 50%;
+}
+
+.selectionNeeded {
+  animation: pulse 0.5s ease-in infinite;
+}
+
+@keyframes pulse {
+  25% {
+    transform: scale(0.9);
+  }
+  75% {
+    transform: scale(1.1);
+  }
 }
 
 /* ---- Gameboard ------*/
 
-.grid .gridCell {
-  height: 5vmin;
-  width: 5vw;
-  background-color: brown;
-  border: 1px solid black;
+.gridCell {
+  height: 15vmin;
+  width: 15vw;
+  background-color: coral;
+  border: 0.1vmin solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10vmin;
+  font-weight: bold;
+  color: lavenderblush;
 }
+
+.gridCell:hover {
+  opacity: 0.8;
+}
+
+.gridCell:hover {
+  cursor: pointer;
+}
+
+.gridWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.gridContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 4vh;
+}
+
+.winner {
+  font-size: 3vmin;
+  display: flex;
+  height: 10px;
+  justify-content: center;
+  padding-top: 2vh;
+  padding-bottom: 4vh;
+  font-weight: bold;
+  color: brown;
+}
+
+.winnerContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.resetWrapper button {
+  padding: 1vmin 4vmin;
+  border-radius: 5vmin;
+  border: 3px peachpuff solid;
+  color: brown;
+  background-color: bisque;
+}
+
+.resetButton:hover {
+  cursor: pointer;
+  background-color: antiquewhite;
+}
+
+.resetWrapper {
+  display: flex;
+  gap: 1vw;
+  justify-content: center;
+  padding-top: 2vh;
+}
+
+.winCounterWrapper {
+  display: flex;
+  justify-content: space-between;
+  padding: 1vmin;
+  font-size: 2vmin;
+  margin-bottom: 0;
+  height: 1vh;
+  margin-top: 1vh;
+}
+
+.matchWinnerContainer {
+  display: flex;
+  justify-content: center;
+  height: 2vh;
+}
+
+.matchWinner {
+  color: orangered;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
