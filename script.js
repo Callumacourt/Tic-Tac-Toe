@@ -1,6 +1,3 @@
-/* eslint-disable operator-linebreak */
-/* eslint-disable wrap-iife */
-
 const selectors = {
   gridCell: document.querySelectorAll('.gridCell'),
   oButton: document.querySelector('.O'),
@@ -13,8 +10,6 @@ const selectors = {
   endGameButton: document.querySelector('.endGame'),
   matchWinner: document.querySelector('.matchWinner'),
 };
-
-// eslint-disable-next-line wrap-iife
 
 const GameboardModule = (function () {
   const gameboard = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -40,10 +35,10 @@ const GameboardModule = (function () {
       const secondCell = document.getElementById(combination[1].toString());
       const thirdCell = document.getElementById(combination[2].toString());
       if (
-        firstCell.innerHTML === secondCell.innerHTML &&
-        secondCell.innerHTML === thirdCell.innerHTML &&
-        firstCell.innerHTML.trim() !== '' &&
-        firstCell.innerHTML !== undefined
+        firstCell.innerHTML === secondCell.innerHTML
+        && secondCell.innerHTML === thirdCell.innerHTML
+        && firstCell.innerHTML.trim() !== ''
+        && firstCell.innerHTML !== undefined
       ) {
         winner = firstCell.innerHTML;
         return winner;
@@ -54,8 +49,8 @@ const GameboardModule = (function () {
 
   function checkForDraw() {
     if (
-      GameboardModule.checkForWinner() === null &&
-      Array.from(selectors.gridCell).every((cell) => cell.innerHTML !== '')
+      GameboardModule.checkForWinner() === null
+      && Array.from(selectors.gridCell).every((cell) => cell.innerHTML !== '')
     ) {
       selectors.winnerDisplayer.innerHTML = "It's a draw!";
     }
@@ -67,7 +62,7 @@ const GameboardModule = (function () {
     checkForWinner,
     checkForDraw,
   };
-})();
+}());
 
 const gameFlowModule = (function () {
   let pieceChoice;
@@ -84,25 +79,19 @@ const gameFlowModule = (function () {
 
   function getPlayerPiece() {
     if (pieceChoice === undefined) {
-      const oButtonClickHandler = () => {
-        pieceChoice = 'O';
-        /* Removes animation from piece choice buttons */
+      const handleClick = (piece) => {
+        pieceChoice = piece;
         selectors.buttonWrapper.classList.remove('selectionNeeded');
         getComputerPiece();
-        selectors.oButton.removeEventListener('click', oButtonClickHandler);
-        selectors.xButton.removeEventListener('click', xButtonClickHandler);
+        selectors.oButton.removeEventListener('click', handleOClick);
+        selectors.xButton.removeEventListener('click', handleXClick);
       };
 
-      const xButtonClickHandler = () => {
-        pieceChoice = 'X';
-        selectors.buttonWrapper.classList.remove('selectionNeeded');
-        getComputerPiece();
-        selectors.xButton.removeEventListener('click', xButtonClickHandler);
-        selectors.oButton.removeEventListener('click', oButtonClickHandler);
-      };
+      const handleOClick = () => handleClick('O');
+      const handleXClick = () => handleClick('X');
 
-      selectors.oButton.addEventListener('click', oButtonClickHandler);
-      selectors.xButton.addEventListener('click', xButtonClickHandler);
+      selectors.oButton.addEventListener('click', handleOClick);
+      selectors.xButton.addEventListener('click', handleXClick);
     }
   }
 
@@ -126,6 +115,22 @@ const gameFlowModule = (function () {
 
   playerWins = 0;
 
+  function winsTracker(winner) {
+    if (winner === pieceChoice) {
+      selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
+    } else if (winner === computerPiece) {
+      computerWins += 1;
+      selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
+    }
+  }
+
+  function checkForWinnerAndUpdate(winner) {
+    selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
+    gameOver = true;
+
+    winsTracker(winner);
+  }
+
   function setComputerChoice() {
     if (GameboardModule.gameboard.length === 0) {
       return;
@@ -141,16 +146,7 @@ const gameFlowModule = (function () {
 
       const winner = GameboardModule.checkForWinner();
       if (winner !== null) {
-        selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
-        gameOver = true;
-
-        /* turn into function please */
-        if (winner === pieceChoice) {
-          selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
-        } else if (winner === computerPiece) {
-          computerWins += 1;
-          selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
-        }
+        checkForWinnerAndUpdate(winner);
       }
       turnDecider = 'player';
     } else {
@@ -202,10 +198,10 @@ const gameFlowModule = (function () {
         }
         // Check if cell is empty, piece is chosen, it's player's turn and the game isn't over
         if (
-          turnDecider === 'player' &&
-          cell.innerHTML.trim() === '' &&
-          pieceChoice !== undefined &&
-          selectors.winnerDisplayer.innerHTML === ''
+          turnDecider === 'player'
+          && cell.innerHTML.trim() === ''
+          && pieceChoice !== undefined
+          && selectors.winnerDisplayer.innerHTML === ''
         ) {
           // Get the ID of the selected cell and convert it to a number
           const selectedNumber = Number(cell.id);
@@ -241,7 +237,7 @@ const gameFlowModule = (function () {
     computerArray,
     matchWinnerChecker,
   };
-})();
+}());
 
 const gameAdmin = (function () {
   function resetGame() {
@@ -271,4 +267,4 @@ const gameAdmin = (function () {
   selectors.resetButton.addEventListener('click', () => {
     resetGame();
   });
-})();
+}());
