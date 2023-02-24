@@ -1,3 +1,7 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable arrow-parens */
+/* eslint-disable wrap-iife */
+
 const selectors = {
   gridCell: document.querySelectorAll('.gridCell'),
   oButton: document.querySelector('.O'),
@@ -28,33 +32,33 @@ const GameboardModule = (function () {
     [3, 6, 9],
   ];
 
-  function checkForWinner() {
+  const checkForWinner = () => {
     let winner = null;
-    GameboardModule.winningCombinations.forEach((combination) => {
+    GameboardModule.winningCombinations.forEach(combination => {
       const firstCell = document.getElementById(combination[0].toString());
       const secondCell = document.getElementById(combination[1].toString());
       const thirdCell = document.getElementById(combination[2].toString());
       if (
-        firstCell.innerHTML === secondCell.innerHTML
-        && secondCell.innerHTML === thirdCell.innerHTML
-        && firstCell.innerHTML.trim() !== ''
-        && firstCell.innerHTML !== undefined
+        firstCell.innerHTML === secondCell.innerHTML &&
+        secondCell.innerHTML === thirdCell.innerHTML &&
+        firstCell.innerHTML.trim() !== '' &&
+        firstCell.innerHTML !== undefined
       ) {
         winner = firstCell.innerHTML;
         return winner;
       }
     });
     return winner;
-  }
+  };
 
-  function checkForDraw() {
-    if (
-      GameboardModule.checkForWinner() === null
-      && Array.from(selectors.gridCell).every((cell) => cell.innerHTML !== '')
-    ) {
+  const checkForDraw = () => {
+    if (GameboardModule.checkForWinner() !== null) {
+      return;
+    }
+    if (Array.from(selectors.gridCell).every(cell => cell.innerHTML !== '')) {
       selectors.winnerDisplayer.innerHTML = "It's a draw!";
     }
-  }
+  };
 
   return {
     gameboard,
@@ -62,24 +66,24 @@ const GameboardModule = (function () {
     checkForWinner,
     checkForDraw,
   };
-}());
+})();
 
 const gameFlowModule = (function () {
   let pieceChoice;
   let computerPiece;
   let turnDecider = 'player';
 
-  function getComputerPiece() {
+  const getComputerPiece = () => {
     if (pieceChoice === 'O') {
       computerPiece = 'X';
     } else if (pieceChoice === 'X') {
       computerPiece = 'O';
     }
-  }
+  };
 
-  function getPlayerPiece() {
+  const getPlayerPiece = () => {
     if (pieceChoice === undefined) {
-      const handleClick = (piece) => {
+      const handleClick = piece => {
         pieceChoice = piece;
         selectors.buttonWrapper.classList.remove('selectionNeeded');
         getComputerPiece();
@@ -93,12 +97,12 @@ const gameFlowModule = (function () {
       selectors.oButton.addEventListener('click', handleOClick);
       selectors.xButton.addEventListener('click', handleXClick);
     }
-  }
+  };
 
-  function resetPieces() {
+  const resetPieces = () => {
     pieceChoice = undefined;
     computerPiece = undefined;
-  }
+  };
 
   const computerArray = [];
   const playerArray = [];
@@ -111,28 +115,29 @@ const gameFlowModule = (function () {
 
   playerWins = 0;
 
-  function generateComputerChoice() {
-    return Math.floor(Math.random() * 9) + 1;
-  }
+  const generateComputerChoice = () => Math.floor(Math.random() * 9) + 1;
 
-  function winsTracker(winner) {
+  const winsTracker = winner => {
     if (winner === pieceChoice) {
       selectors.playerWinsTracker.innerHTML = `Player Wins: ${playerWins}`;
     } else if (winner === computerPiece) {
       computerWins += 1;
       selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
     }
-  }
+  };
 
-  function checkForWinnerAndUpdate(winner) {
+  const checkForWinnerAndUpdate = winner => {
     selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
     gameOver = true;
 
     winsTracker(winner);
-  }
+  };
 
-  function setComputerChoice() {
-    if (GameboardModule.gameboard.length === 0) {
+  const setComputerChoice = () => {
+    if (
+      GameboardModule.gameboard.length === 0 ||
+      selectors.winnerDisplayer.innerHTML !== ''
+    ) {
       return;
     }
     const computerChoice = generateComputerChoice();
@@ -152,16 +157,16 @@ const gameFlowModule = (function () {
     } else {
       setComputerChoice();
     }
-  }
+  };
 
-  function resetWins() {
+  const resetWins = () => {
     computerWins = 0;
     playerWins = 0;
     selectors.computerWinsTracker.innerHTML = '';
     selectors.playerWinsTracker.innerHTML = '';
-  }
+  };
 
-  function matchWinnerChecker() {
+  const matchWinnerChecker = () => {
     if (computerWins > playerWins) {
       selectors.matchWinner.innerHTML = 'The computer has won the match';
       resetWins();
@@ -172,9 +177,9 @@ const gameFlowModule = (function () {
       selectors.matchWinner.innerHTML = 'The match was a draw';
       resetWins();
     }
-  }
+  };
 
-  function updateWinner() {
+  const updateWinner = () => {
     const winner = GameboardModule.checkForWinner();
     if (winner !== null) {
       selectors.winnerDisplayer.innerHTML = `${winner} wins!`;
@@ -187,10 +192,10 @@ const gameFlowModule = (function () {
         selectors.computerWinsTracker.innerHTML = `Computer Wins: ${computerWins}`;
       }
     }
-  }
+  };
 
-  function getPlayerChoice() {
-    Array.from(selectors.gridCell).forEach((cell) => {
+  const getPlayerChoice = () => {
+    Array.from(selectors.gridCell).forEach(cell => {
       // Make player select a piece at game start //
       cell.addEventListener('click', () => {
         if (pieceChoice === undefined) {
@@ -198,10 +203,10 @@ const gameFlowModule = (function () {
         }
         // Check if cell is empty, piece is chosen, it's player's turn and the game isn't over
         if (
-          turnDecider === 'player'
-          && cell.innerHTML.trim() === ''
-          && pieceChoice !== undefined
-          && selectors.winnerDisplayer.innerHTML === ''
+          turnDecider === 'player' &&
+          cell.innerHTML.trim() === '' &&
+          pieceChoice !== undefined &&
+          selectors.winnerDisplayer.innerHTML === ''
         ) {
           // Get the ID of the selected cell and convert it to a number
           const selectedNumber = Number(cell.id);
@@ -227,7 +232,7 @@ const gameFlowModule = (function () {
         }
       });
     });
-  }
+  };
   return {
     getPlayerPiece,
     getPlayerChoice,
@@ -237,10 +242,10 @@ const gameFlowModule = (function () {
     computerArray,
     matchWinnerChecker,
   };
-}());
+})();
 
 const gameAdmin = (function () {
-  function resetGame() {
+  const resetGame = () => {
     GameboardModule.gameboard = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     selectors.winnerDisplayer.innerHTML = '';
     gameFlowModule.turnDecider = 'player';
@@ -249,12 +254,12 @@ const gameAdmin = (function () {
     selectors.matchWinner.innerHTML = '';
     gameFlowModule.resetPieces();
 
-    Array.from(selectors.gridCell).forEach((cell) => {
+    Array.from(selectors.gridCell).forEach(cell => {
       cell.innerHTML = '';
     });
 
     gameFlowModule.getPlayerPiece();
-  }
+  };
 
   window.addEventListener('load', () => {
     gameFlowModule.getPlayerPiece();
@@ -267,4 +272,5 @@ const gameAdmin = (function () {
   selectors.resetButton.addEventListener('click', () => {
     resetGame();
   });
-}());
+})();
+
